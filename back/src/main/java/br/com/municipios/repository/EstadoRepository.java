@@ -15,4 +15,6 @@ public interface EstadoRepository extends JpaRepository<Estado, Long> {
     Optional<Estado> findByIdAndUser(Long id, User user);
 
     Optional<Estado> findByCodigoUf(Integer codigoUf);
+
+    Optional<Estado> findByCodigoUfAndUser(Integer codigoUf, User user);
 }

@@ -16,7 +16,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "estados")
+@Table(name = "estados", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"codigo_uf", "user_id"})
+})
 public class Estado {
 
     @Id
@@ -26,7 +28,8 @@ public class Estado {
     @Column(name = "nome_uf", nullable = false, length = 2)
     private String uf;
 
-    @Column(name = "codigo_uf", nullable = false, unique = true)
+    // A constraint unique=true foi removida daqui
+    @Column(name = "codigo_uf", nullable = false)
     private Integer codigoUf;
 
     @ManyToOne(fetch = FetchType.LAZY)

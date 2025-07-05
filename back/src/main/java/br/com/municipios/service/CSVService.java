@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -75,24 +76,32 @@ public class CSVService {
         for (Map.Entry<Integer, List<CSVEntity>> entry : municipiosAgrupadosPorEstado.entrySet()) {
             Integer codigoUf = entry.getKey();
             List<CSVEntity> municipiosCsv = entry.getValue();
-
             String nomeUf = municipiosCsv.get(0).getUf();
 
-            Estado estado = estadoRepository.findByCodigoUf(codigoUf)
+            Estado estado = estadoRepository.findByCodigoUfAndUser(codigoUf, user)
                     .orElseGet(() -> new Estado(nomeUf, codigoUf, user));
 
+            Map<String, Municipio> municipiosExistentesMap = estado.getMunicipios().stream()
+                    .collect(Collectors.toMap(Municipio::getCodigo, Function.identity()));
+
             for (CSVEntity csvEntity : municipiosCsv) {
-                Municipio municipio = new Municipio(
-                        csvEntity.getNomeMunicipio(),
-                        csvEntity.getCodigoMunicipio(),
-                        (long) csvEntity.getPopulacao(),
-                        "sim".equalsIgnoreCase(csvEntity.getCapitalDeEstado()),
-                        estado
-                );
+                Municipio municipio = municipiosExistentesMap.get(csvEntity.getCodigoMunicipio());
 
-                estado.addMunicipio(municipio);
+                if (municipio != null) {
+                    municipio.setNome(csvEntity.getNomeMunicipio());
+                    municipio.setPopulacao((long) csvEntity.getPopulacao());
+                    municipio.setCapital("sim".equalsIgnoreCase(csvEntity.getCapitalDeEstado()));
+                } else {
+                    Municipio novoMunicipio = new Municipio(
+                            csvEntity.getNomeMunicipio(),
+                            csvEntity.getCodigoMunicipio(),
+                            (long) csvEntity.getPopulacao(),
+                            "sim".equalsIgnoreCase(csvEntity.getCapitalDeEstado()),
+                            estado
+                    );
+                    estado.addMunicipio(novoMunicipio);
+                }
             }
-
             estadoRepository.save(estado);
         }
     }
