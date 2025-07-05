@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MultipartException;
 
 import java.time.Instant;
 
@@ -31,7 +32,7 @@ public class GlobalExceptionHandler {
         return this.buildResponse(ex, request, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({ IllegalArgumentException.class })
+    @ExceptionHandler({ IllegalArgumentException.class, MultipartException.class })
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(Exception ex, HttpServletRequest request) {
         return this.buildResponse(ex, request, HttpStatus.BAD_REQUEST);
     }

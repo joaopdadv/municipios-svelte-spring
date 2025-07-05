@@ -1,27 +1,36 @@
 package br.com.municipios.service;
 
+import br.com.municipios.entity.auth.User;
 import br.com.municipios.entity.csv.CSVEntity;
+import br.com.municipios.entity.estados.Estado;
+import br.com.municipios.entity.municipios.Municipio;
+import br.com.municipios.repository.EstadoRepository;
+import br.com.municipios.repository.MunicipioRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class CSVService {
 
-    private final EstadoService estadoService;
-    private final MunicipioService municipioService;
+    private final EstadoRepository estadoRepository;
+    private final MunicipioRepository municipioRepository;
 
-    public void importarCsv(MultipartFile file) {
+    public void importarCsv(MultipartFile file, User user) throws BadRequestException {
         try {
             List<CSVEntity> listCsv = leituraCsv(file);
 
-//            List<Estado> listEstados = this.saveEstados(listCsv);
+            saveData(listCsv, user);
 
         } catch (Exception e) {
 //            logger.severe("Erro ao importar o CSV: " + e.getMessage());
@@ -48,26 +57,43 @@ public class CSVService {
     }
 
     private CSVEntity parseCamposCsvDTO(String[] campos) {
+        System.out.println(Arrays.toString(campos));
         return new CSVEntity(
-//                campos[0],
-//                campos[1],
-//                campos[2],
-//                campos[3],
-//                campos[4],
-//                campos[5],
-//                campos[6],
-//                campos[7],
-//                campos[8],
-//                campos[9],
-//                this.parseInteger(campos[10]),
-//                this.parseInteger(campos[11]),
-//                this.parseInteger(campos[12]),
-//                this.parseInteger(campos[13]),
-//                this.parseInteger(campos[14]),
-//                this.parseInteger(campos[15]),
-//                this.parseInteger(campos[16]),
-//                this.parseInteger(campos[17]),
-//                this.parseInteger(campos[18])
+                campos[0],
+                Integer.parseInt(campos[1]),
+                campos[2],
+                campos[3],
+                campos[4],
+                Integer.parseInt(campos[5])
         );
+    }
+
+    private void saveData(List<CSVEntity> listCsv, User user) {
+        Map<Integer, List<CSVEntity>> municipiosAgrupadosPorEstado = listCsv.stream()
+                .collect(Collectors.groupingBy(CSVEntity::getCodigoUf));
+
+        for (Map.Entry<Integer, List<CSVEntity>> entry : municipiosAgrupadosPorEstado.entrySet()) {
+            Integer codigoUf = entry.getKey();
+            List<CSVEntity> municipiosCsv = entry.getValue();
+
+            String nomeUf = municipiosCsv.get(0).getUf();
+
+            Estado estado = estadoRepository.findByCodigoUf(codigoUf)
+                    .orElseGet(() -> new Estado(nomeUf, codigoUf, user));
+
+            for (CSVEntity csvEntity : municipiosCsv) {
+                Municipio municipio = new Municipio(
+                        csvEntity.getNomeMunicipio(),
+                        csvEntity.getCodigoMunicipio(),
+                        (long) csvEntity.getPopulacao(),
+                        "sim".equalsIgnoreCase(csvEntity.getCapitalDeEstado()),
+                        estado
+                );
+
+                estado.addMunicipio(municipio);
+            }
+
+            estadoRepository.save(estado);
+        }
     }
 }

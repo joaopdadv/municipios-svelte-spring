@@ -1,13 +1,13 @@
 package br.com.municipios.controller;
 
+import br.com.municipios.entity.auth.User;
 import br.com.municipios.service.CSVService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/csv")
@@ -18,10 +18,11 @@ public class CSVController {
 
     @PostMapping("/upload")
     public ResponseEntity<String> lerCsv(
-            @RequestParam("file") MultipartFile file
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal User user
     ) throws BadRequestException{
         try {
-            this.csvService.importarCsv(file);
+            this.csvService.importarCsv(file, user);
             return ResponseEntity.ok("CSV importado com sucesso!");
         } catch (Exception e) {
             throw new BadRequestException("Erro ao importar csv");
