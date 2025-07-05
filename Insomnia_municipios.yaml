@@ -1,0 +1,82 @@
+type: collection.insomnia.rest/5.0
+name: municipios Plus
+meta:
+  id: wrk_1dccfe03b44c4b8291eec063c791bf29
+  created: 1748993360979
+  modified: 1748993360979
+  description: ""
+collection:
+  - url: http://localhost:8080/api/auth/login
+    name: Login
+    meta:
+      id: req_4c2e8731c59746e9a03aa45364550bb4
+      created: 1748993367655
+      modified: 1750192283043
+      isPrivate: false
+      description: ""
+      sortKey: -1748993367655
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"email": "joaopdadv2@gmail.com",
+        	"password": "123"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.1.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://localhost:8080/api/auth/register
+    name: Register
+    meta:
+      id: req_b61abefc48864096bc3e831f9f90c083
+      created: 1748993462310
+      modified: 1750192280961
+      isPrivate: false
+      description: ""
+      sortKey: -1747180002369.5
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"email": "joaopdadv4@gmail.com",
+        	"password": "123",
+        	"role": "ALUNO"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.1.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_41f9852017f18e162c05009834833480dff4652b
+    created: 1748993360981
+    modified: 1748993360981
+environments:
+  name: Base Environment
+  meta:
+    id: env_41f9852017f18e162c05009834833480dff4652b
+    created: 1748993360980
+    modified: 1748993360980
+    isPrivate: false

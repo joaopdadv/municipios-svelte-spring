@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  municipios-postgres:
+    image: postgres:latest
+    container_name: municipios-postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: municipios
+      POSTGRES_PASSWORD: municipios
+      POSTGRES_DB: municipios_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - municipios
+
+  municipios-back:
+    build:
+      context: ./back
+    container_name: municipios-back
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://municipios-postgres:5432/municipios_db
+      SPRING_DATASOURCE_USERNAME: municipios
+      SPRING_DATASOURCE_PASSWORD: municipios
+    ports:
+      - "8080:8080"
+    networks:
+      - municipios
+    depends_on:
+      - municipios-postgres
+
+  municipios-front:
+    build:
+      context: ./front
+      args:
+        - PUBLIC_API_BASE_URL=http://municipios-back:8080/api
+    container_name: municipios-front
+    environment:
+      - ORIGIN=http://localhost:5173
+      - PUBLIC_API_BASE_URL=http://municipios-back:8080/api
+    ports:
+      - "5173:3000"
+    networks:
+      - municipios
+
+volumes:
+  postgres_data:
+
+
+networks:
+  municipios:
+    driver: bridge
