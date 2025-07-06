@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 public class CSVService {
 
     private final EstadoRepository estadoRepository;
-    private final MunicipioRepository municipioRepository;
 
     public void importarCsv(MultipartFile file, User user) throws BadRequestException {
         try {
@@ -34,12 +33,11 @@ public class CSVService {
             saveData(listCsv, user);
 
         } catch (Exception e) {
-//            logger.severe("Erro ao importar o CSV: " + e.getMessage());
-            throw new RuntimeException("Erro ao importar o CSV", e);
+            throw new BadRequestException("Erro ao importar o CSV", e);
         }
     }
 
-    private List<CSVEntity> leituraCsv(MultipartFile file) {
+    private List<CSVEntity> leituraCsv(MultipartFile file) throws BadRequestException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
             String header = br.readLine(); // Read the header line
 
@@ -52,13 +50,11 @@ public class CSVService {
 
             return listLinhas;
         } catch (Exception e) {
-//            logger.severe("Erro ao ler o arquivo CSV: " + e.getMessage());
-            throw new RuntimeException("Erro ao ler o arquivo CSV", e);
+            throw new BadRequestException("Erro ao ler o arquivo CSV", e);
         }
     }
 
     private CSVEntity parseCamposCsvDTO(String[] campos) {
-        System.out.println(Arrays.toString(campos));
         return new CSVEntity(
                 campos[0],
                 Integer.parseInt(campos[1]),

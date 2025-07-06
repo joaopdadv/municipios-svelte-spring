@@ -28,7 +28,6 @@ public class Estado {
     @Column(name = "nome_uf", nullable = false, length = 2)
     private String uf;
 
-    // A constraint unique=true foi removida daqui
     @Column(name = "codigo_uf", nullable = false)
     private Integer codigoUf;
 

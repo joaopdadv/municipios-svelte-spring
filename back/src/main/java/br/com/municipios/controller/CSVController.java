@@ -20,12 +20,8 @@ public class CSVController {
     public ResponseEntity<String> lerCsv(
             @RequestParam("file") MultipartFile file,
             @AuthenticationPrincipal User user
-    ) throws BadRequestException{
-        try {
-            this.csvService.importarCsv(file, user);
-            return ResponseEntity.ok("CSV importado com sucesso!");
-        } catch (Exception e) {
-            throw new BadRequestException("Erro ao importar csv");
-        }
+    ) throws BadRequestException {
+        this.csvService.importarCsv(file, user);
+        return ResponseEntity.ok("CSV importado com sucesso!");
     }
 }
