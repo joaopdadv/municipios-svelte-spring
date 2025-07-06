@@ -3,7 +3,6 @@ package br.com.municipios.service;
 import br.com.municipios.entity.auth.User;
 import br.com.municipios.entity.municipios.Municipio;
 import br.com.municipios.entity.municipios.dto.MunicipioFilterParamsDTO;
-import br.com.municipios.entity.municipios.dto.MunicipioResponseDTO;
 import br.com.municipios.repository.MunicipioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,17 +23,6 @@ public class MunicipioService {
                 filters.getPopulacaoIni(),
                 filters.getPopulacaoFim(),
                 pageable
-        );
-    }
-
-    private MunicipioResponseDTO toResponseDTO(Municipio municipio) {
-        return new MunicipioResponseDTO(
-                municipio.getId(),
-                municipio.getNome(),
-                municipio.getCodigo(),
-                municipio.getPopulacao(),
-                municipio.isCapital(),
-                municipio.getEstado().getId()
         );
     }
 }
