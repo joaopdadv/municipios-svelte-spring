@@ -2,6 +2,7 @@ package br.com.municipios.entity.municipios;
 
 import br.com.municipios.entity.estados.Estado;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +33,7 @@ public class Municipio {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "estado_id", nullable = false)
-    @JsonBackReference
+    @JsonManagedReference
     private Estado estado;
 
     public Municipio(String nome, String codigo, Long populacao, boolean isCapital, Estado estado) {

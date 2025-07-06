@@ -92,7 +92,7 @@ public class CSVService {
                             csvEntity.getNomeMunicipio(),
                             csvEntity.getCodigoMunicipio(),
                             (long) csvEntity.getPopulacao(),
-                            "sim".equalsIgnoreCase(csvEntity.getCapitalDeEstado()),
+                            "sim".equalsIgnoreCase(csvEntity.getCapitalDeEstado().trim()),
                             estado
                     );
                     estado.addMunicipio(novoMunicipio);

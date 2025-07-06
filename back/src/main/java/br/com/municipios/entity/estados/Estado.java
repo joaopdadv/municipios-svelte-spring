@@ -42,7 +42,7 @@ public class Estado {
             orphanRemoval = true,
             fetch = FetchType.LAZY
     )
-    @JsonManagedReference
+    @JsonBackReference
     private List<Municipio> municipios = new ArrayList<>();
 
     public Estado(String uf, Integer codigoUf, User user) {

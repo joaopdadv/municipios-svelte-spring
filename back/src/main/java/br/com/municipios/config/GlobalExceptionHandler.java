@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, status);
     }
 
-    @ExceptionHandler({ BadRequestException.class })
+    @ExceptionHandler({ BadRequestException.class, Exception.class })
     public ResponseEntity<ErrorResponse> handleBadRequestException(Exception ex, HttpServletRequest request) {
         return this.buildResponse(ex, request, HttpStatus.BAD_REQUEST);
     }
