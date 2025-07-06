@@ -23,7 +23,7 @@ public class AuthController {
     private String jwtCookieName;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(
+    public ResponseEntity<UserResponse> login(
         @RequestBody AuthRequest req
     ) throws AuthenticationException {
         AuthResponse res = authService.login(req);
@@ -37,7 +37,7 @@ public class AuthController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(res);
+                .body(res.getUser());
     }
 
     @PostMapping("/logout")

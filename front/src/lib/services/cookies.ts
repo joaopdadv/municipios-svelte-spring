@@ -1,3 +1,5 @@
+import type { Cookies } from "@sveltejs/kit";
+
 // Client-side helpers (browser only)
 export const browserCookies = {
     set: (name: string, value: string, options?: { days?: number }) => {
@@ -25,3 +27,29 @@ export const browserCookies = {
         browserCookies.set(name, '', { days: -1 });
     }
 };
+
+export const serverCookies = {
+    set: (
+        cookies: Cookies,
+        name: string,
+        value: string,
+        options?: { days?: number; httpOnly?: boolean; secure?: boolean }
+    ) => {
+        cookies.set(name, value, {
+            path: '/',
+            httpOnly: options?.httpOnly ?? true,
+            secure: options?.secure ?? process.env.NODE_ENV === 'production',
+            maxAge: options?.days ? options.days * 60 * 60 * 24 : undefined,
+            sameSite: 'strict'
+        });
+    },
+
+    get: (cookies: Cookies, name: string): string | undefined => {
+        return cookies.get(name);
+    },
+
+    remove: (cookies: Cookies, name: string) => {
+        cookies.delete(name, { path: '/' });
+    }
+};
+

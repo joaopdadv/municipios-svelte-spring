@@ -14,7 +14,6 @@ export interface ILoginRequest {
 
 export interface ILoginResponse {
     user: IUser;
-    token: string;
 }
 
 export interface IRegisterRequest {

@@ -1,9 +1,9 @@
 import type { ILoginRequest, ILoginResponse, IRegisterRequest, IUser } from '$lib/types/auth';
 import api from '../api';
 
-export async function login({ email, password }: ILoginRequest): Promise<ILoginResponse> {
+export async function login({ email, password }: ILoginRequest): Promise<IUser> {
 
-    const response = await api.post<ILoginResponse>('/auth/login', {
+    const response = await api.post<IUser>('/auth/login', {
         email,
         password
     });

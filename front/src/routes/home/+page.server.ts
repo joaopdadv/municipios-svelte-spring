@@ -7,6 +7,8 @@ import { fail } from "@sveltejs/kit";
 import { toast } from "svelte-sonner";
 import { login, register } from "$lib/api/auth/authApi.js";
 import { registerSchema } from "./(schema)/registerSchema.js";
+import { storage } from "$lib/services/storage.js";
+import { browserCookies, serverCookies } from "$lib/services/cookies.js";
 
 export const load: PageServerLoad = async () => {
     return {
@@ -25,7 +27,11 @@ export const actions: Actions = {
         }
 
         try {
-            await login(form.data);
+            const user = await login(form.data);
+            serverCookies.set(event.cookies, 'user', JSON.stringify(user), {
+                days: 7,
+                httpOnly: false
+            });
 
             return {
                 form,
