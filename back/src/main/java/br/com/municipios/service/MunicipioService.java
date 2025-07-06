@@ -17,7 +17,14 @@ public class MunicipioService {
     private final MunicipioRepository municipioRepository;
 
     public Page<Municipio> getAll(User user, Pageable pageable, MunicipioFilterParamsDTO filters) {
-        return municipioRepository.findAllFiltered(user, filters.getNome(), filters.getCapital(), pageable);
+        return municipioRepository.findAllFiltered(
+                user,
+                filters.getNome(),
+                filters.getCapital(),
+                filters.getPopulacaoIni(),
+                filters.getPopulacaoFim(),
+                pageable
+        );
     }
 
     private MunicipioResponseDTO toResponseDTO(Municipio municipio) {

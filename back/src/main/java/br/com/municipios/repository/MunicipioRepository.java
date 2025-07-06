@@ -13,12 +13,16 @@ import org.springframework.stereotype.Repository;
 public interface MunicipioRepository extends JpaRepository<Municipio, Long> {
     @Query("SELECT m FROM Municipio m JOIN FETCH m.estado e WHERE e.user = :user " +
             "AND (lower(m.nome) LIKE lower(concat('%', :nome, '%')) OR :nome IS NULL) " +
-            "AND (:capital IS NULL OR m.capital = :capital)"
+            "AND (:capital IS NULL OR m.capital = :capital)" +
+            "AND (:populacaoIni IS NULL OR m.populacao >= :populacaoIni)" +
+            "AND (:populacaoFim IS NULL OR m.populacao <= :populacaoFim)"
     )
     Page<Municipio> findAllFiltered(
             @Param("user") User user,
             @Param("nome") String nome,
             @Param("capital") Boolean capital,
+            @Param("populacaoIni") Long populacaoIni,
+            @Param("populacaoFim") Long populacaoFim,
             Pageable pageable
     );
 }

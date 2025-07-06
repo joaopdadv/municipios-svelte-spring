@@ -6,4 +6,6 @@ import lombok.Data;
 public class MunicipioFilterParamsDTO {
     private String nome;
     private Boolean capital;
+    private Long populacaoIni;
+    private Long populacaoFim;
 }
