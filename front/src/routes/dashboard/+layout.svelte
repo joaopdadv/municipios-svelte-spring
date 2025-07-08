@@ -23,8 +23,8 @@
     class="w-screen h-screen bg-background flex flex-col items-center justify-start p-6 gap-6"
 >
     <Menu />
-    <div class="h-full w-full flex flex-col gap-4">
-        <div class="flex items-center justify-between">
+    <div class="flex-1 w-full flex flex-col gap-4 min-h-0">
+        <div class="flex items-center justify-between h-max">
             <div class="flex items-center gap-2 text-2xl font-medium">
                 <button
                     onclick={() => handleSelectChange("Estados")}
@@ -44,8 +44,8 @@
                 <Button variant="default">Pesquisar</Button>
             </div>
         </div>
-        <div class="h-full w-full">
-            <slot />
+        <div class="flex-1 w-full min-h-0">
+            {@render children()}
         </div>
     </div>
 </div>

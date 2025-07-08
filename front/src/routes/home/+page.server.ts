@@ -4,11 +4,9 @@ import { zod } from "sveltekit-superforms/adapters";
 import { loginSchema } from "./(schema)/loginSchema";
 import type { Actions } from "../$types.js";
 import { fail } from "@sveltejs/kit";
-import { toast } from "svelte-sonner";
 import { login, register } from "$lib/api/auth/authApi.js";
 import { registerSchema } from "./(schema)/registerSchema.js";
-import { storage } from "$lib/services/storage.js";
-import { browserCookies, serverCookies } from "$lib/services/cookies.js";
+import { serverCookies } from "$lib/services/cookies.js";
 
 export const load: PageServerLoad = async () => {
     return {
@@ -27,8 +25,24 @@ export const actions: Actions = {
         }
 
         try {
-            const user = await login(form.data);
-            serverCookies.set(event.cookies, 'user', JSON.stringify(user), {
+            const incomingCookie = event.request.headers.get('cookie');
+
+            const user = await login(form.data, incomingCookie);
+
+            const apiSetCookieHeader = user.headers['set-cookie'];
+            if (apiSetCookieHeader) {
+                const cookieValue = apiSetCookieHeader[0].split(';')[0].split('=')[1];
+                const cookieName = apiSetCookieHeader[0].split(';')[0].split('=')[0];
+
+                event.cookies.set(cookieName.trim(), cookieValue.trim(), {
+                    path: '/',
+                    httpOnly: true,
+                    maxAge: 60 * 60 * 24 * 7,
+                    sameSite: 'lax'
+                });
+            }
+
+            serverCookies.set(event.cookies, 'user', JSON.stringify(user.data), {
                 days: 7,
                 httpOnly: false
             });
