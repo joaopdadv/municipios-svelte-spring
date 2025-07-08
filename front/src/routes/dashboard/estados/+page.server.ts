@@ -1,13 +1,16 @@
+// +page.server.ts
 import { getEstados } from '$lib/api/estados/estadosApi';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ request }) => {
-    const estados = await getEstados(
+export const load: PageServerLoad = async ({ request, url }) => {
+    const page = parseInt(url.searchParams.get('page') ?? '0');
+    const size = parseInt(url.searchParams.get('size') ?? '10');
+
+    const estadosPage = await getEstados(
         {
             sort: 'uf,asc',
-            page: 0,
-            size: 27,
-            // uf: '',
+            page: page,
+            size,
             populacaoIni: 0,
             populacaoFim: 1000000000
         },
@@ -15,6 +18,6 @@ export const load: PageServerLoad = async ({ request }) => {
     );
 
     return {
-        estados,
+        estadosPage
     };
 };

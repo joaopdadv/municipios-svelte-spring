@@ -22,3 +22,12 @@ export interface IRegisterRequest {
     role: Omit<USER_ROLE, USER_ROLE.ADMIN>;
 }
 
+export interface IPage<T> {
+    content: Array<T>;
+    page: {
+        size: number;
+        number: number;
+        totalElements: number;
+        totalPages: number;
+    }
+}

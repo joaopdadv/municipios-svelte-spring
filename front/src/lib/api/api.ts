@@ -34,8 +34,7 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
     response => {
-        console.log(response.headers);
-
+        // console.log(response.headers);
         return response;
     },
     error => {
