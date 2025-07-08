@@ -46,7 +46,7 @@
             </Table.Header>
             <Table.Body>
                 {#each estados as e}
-                    <Table.Row>
+                    <Table.Row class="hover:bg-primary/20">
                         <Table.Cell class="font-medium">{e.uf}</Table.Cell>
                         <Table.Cell>{e.codigoUf}</Table.Cell>
                         <Table.Cell
