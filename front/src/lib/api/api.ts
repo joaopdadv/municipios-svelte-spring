@@ -39,9 +39,9 @@ api.interceptors.response.use(
         return response;
     },
     error => {
-        // if (error.status === 401) {
-        //     redirect(302, '/home');
-        // }
+        if (error.status === 401) {
+            redirect(302, '/home');
+        }
         console.log(error.status)
         console.error('Erro na chamada da API:', error.response?.data || error.message);
         return Promise.reject(new Error(error.response?.data?.message || error.message));
