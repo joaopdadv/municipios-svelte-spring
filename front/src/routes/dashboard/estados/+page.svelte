@@ -79,23 +79,25 @@
                 <Table.Row>
                     <Table.Head class="w-[120px]">
                         <button
-                            class="flex items-center gap-2"
+                            class="flex items-center gap-2 cursor-pointer"
                             onclick={() => handleSort("uf")}
                         >
                             UF
                             {#if $currentSortStore?.key === "uf"}
                                 {#if $currentSortStore.direction === "asc"}
-                                    <p>ˆ</p>
+                                    <ArrowUpIcon class="size-4" />
                                 {:else}
-                                    <p>ˇ</p>
+                                    <ArrowDownIcon class="size-4" />
                                 {/if}
+                            {:else}
+                                <p>-</p>
                             {/if}
                         </button>
                     </Table.Head>
 
                     <Table.Head>
                         <button
-                            class="flex items-center gap-2"
+                            class="flex items-center gap-2 cursor-pointer"
                             onclick={() => handleSort("codigoUf")}
                         >
                             Código
@@ -105,6 +107,8 @@
                                 {:else}
                                     <ArrowUpIcon class="size-4" />
                                 {/if}
+                            {:else}
+                                <p>-</p>
                             {/if}
                         </button>
                     </Table.Head>
