@@ -36,7 +36,7 @@
 <form method="POST" use:enhance action="?/login">
     <Form.Field {form} name="email">
         <Form.Control>
-            {#snippet children({ props })}
+            {#snippet children({ props }: { props: Record<string, any> })}
                 <Form.Label>Email</Form.Label>
                 <Input
                     {...props}
@@ -49,7 +49,7 @@
     </Form.Field>
     <Form.Field {form} name="password">
         <Form.Control>
-            {#snippet children({ props })}
+            {#snippet children({ props }: { props: Record<string, any> })}
                 <Form.Label>Password</Form.Label>
                 <Input
                     type="password"

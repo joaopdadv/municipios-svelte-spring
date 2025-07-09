@@ -10,6 +10,12 @@
 
     import type { IEstado } from "$lib/types/estados";
     import type { IPage } from "$lib/types/auth";
+    import type { PageData } from "../$types";
+    import type { Infer, SuperValidated } from "sveltekit-superforms";
+    import type { SearchEstadosSchema } from "./(schema)/searchEstadosSchema";
+    import SelectListTab from "../(components)/SelectListTab.svelte";
+    import ImportCsvDialog from "../(components)/ImportCsvDialog.svelte";
+    import SearchEstados from "./(components)/SearchEstados.svelte";
 
     type SortKey = "uf" | "codigoUf";
 
@@ -18,6 +24,7 @@
     }: {
         data: {
             estadosPage: IPage<IEstado>;
+            form: SuperValidated<Infer<SearchEstadosSchema>>;
         };
     } = $props();
 
@@ -73,6 +80,13 @@
 </script>
 
 <div class="h-full w-full flex flex-col gap-4">
+    <div class="flex items-center justify-between h-max">
+        <SelectListTab />
+        <div class="flex items-center gap-2">
+            <ImportCsvDialog />
+            <SearchEstados {data} />
+        </div>
+    </div>
     <ScrollArea class="h-[90%] w-full">
         <Table.Root>
             <Table.Header>
