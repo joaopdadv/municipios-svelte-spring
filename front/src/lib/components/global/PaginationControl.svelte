@@ -2,7 +2,6 @@
     import { createEventDispatcher } from "svelte";
     import * as Pagination from "$lib/components/ui/pagination/index.js";
     import ChevronLeftIcon from "@lucide/svelte/icons/chevron-left";
-    import ChevronRightIcon from "@lucide/svelte/icons/chevron-right";
     import { getPages } from "$lib/utils";
     import { MediaQuery } from "svelte/reactivity";
 
@@ -67,7 +66,7 @@
                 onclick={() => onPageChange(currentPage + 1)}
             >
                 <span class="hidden sm:block">Próximo</span>
-                <ChevronRightIcon class="size-4" />
+                <ChevronLeftIcon class="size-4 rotate-180" />
             </Pagination.NextButton>
         </Pagination.Item>
     </Pagination.Content>

@@ -4,11 +4,14 @@
     import { goto } from "$app/navigation";
     import ScrollArea from "$lib/components/ui/scroll-area/scroll-area.svelte";
     import * as Table from "$lib/components/ui/table/index.js";
-    import { MediaQuery } from "svelte/reactivity";
+    import PaginationControl from "$lib/components/global/PaginationControl.svelte";
+    import ArrowDownIcon from "@lucide/svelte/icons/arrow-down";
+    import ArrowUpIcon from "@lucide/svelte/icons/arrow-up";
 
     import type { IEstado } from "$lib/types/estados";
     import type { IPage } from "$lib/types/auth";
-    import PaginationControl from "$lib/components/global/PaginationControl.svelte";
+
+    type SortKey = "uf" | "codigoUf";
 
     let {
         data,
@@ -27,9 +30,45 @@
         ($page) => parseInt($page.url.searchParams.get("page") ?? "0") + 1,
     );
 
+    const currentSortStore = derived(page, ($page) => {
+        const sortParam = $page.url.searchParams.get("sort");
+        if (!sortParam) return null;
+        const [key, direction] = sortParam.split(",");
+        return { key: key as SortKey, direction: direction as "asc" | "desc" };
+    });
+
     function handlePageChange(event: CustomEvent<number>) {
         const newPage = event.detail;
-        goto(`?page=${newPage - 1}&size=${itemsPerPage}`);
+        const params = new URLSearchParams($page.url.search);
+        params.set("page", (newPage - 1).toString());
+        params.set("size", itemsPerPage.toString());
+        goto(`?${params.toString()}`);
+    }
+
+    function handleSort(key: SortKey) {
+        const currentSort = $currentSortStore;
+        const params = new URLSearchParams($page.url.search);
+        let nextDirection: "asc" | "desc" | null = "asc";
+
+        if (currentSort?.key === key) {
+            if (currentSort.direction === "asc") {
+                nextDirection = "desc";
+            } else {
+                // Ciclo: asc -> desc -> sem ordenação
+                nextDirection = null;
+            }
+        }
+
+        if (nextDirection) {
+            params.set("sort", `${key},${nextDirection}`);
+        } else {
+            params.delete("sort");
+        }
+
+        // // Resetar para a primeira página ao reordenar
+        // params.set("page", "0");
+
+        goto(`?${params.toString()}`, { keepFocus: true, noScroll: true });
     }
 </script>
 
@@ -38,8 +77,38 @@
         <Table.Root>
             <Table.Header>
                 <Table.Row>
-                    <Table.Head class="w-[100px]">UF</Table.Head>
-                    <Table.Head>Código</Table.Head>
+                    <Table.Head class="w-[120px]">
+                        <button
+                            class="flex items-center gap-2"
+                            onclick={() => handleSort("uf")}
+                        >
+                            UF
+                            {#if $currentSortStore?.key === "uf"}
+                                {#if $currentSortStore.direction === "asc"}
+                                    <p>ˆ</p>
+                                {:else}
+                                    <p>ˇ</p>
+                                {/if}
+                            {/if}
+                        </button>
+                    </Table.Head>
+
+                    <Table.Head>
+                        <button
+                            class="flex items-center gap-2"
+                            onclick={() => handleSort("codigoUf")}
+                        >
+                            Código
+                            {#if $currentSortStore?.key === "codigoUf"}
+                                {#if $currentSortStore.direction === "asc"}
+                                    <ArrowDownIcon class="size-4" />
+                                {:else}
+                                    <ArrowUpIcon class="size-4" />
+                                {/if}
+                            {/if}
+                        </button>
+                    </Table.Head>
+
                     <Table.Head>Município mais populoso - população</Table.Head>
                     <Table.Head class="text-right">População total</Table.Head>
                 </Table.Row>
