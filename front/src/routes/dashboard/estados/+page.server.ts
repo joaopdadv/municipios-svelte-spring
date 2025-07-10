@@ -9,26 +9,42 @@ export const load: PageServerLoad = async ({ request, url }) => {
     const page = parseInt(url.searchParams.get('page') ?? '0');
     const size = parseInt(url.searchParams.get('size') ?? '10');
     const sort = url.searchParams.get('sort');
+    const uf = url.searchParams.get('uf') ?? undefined;
+    const populacaoIniStr = url.searchParams.get('populacaoIni');
+    const populacaoFimStr = url.searchParams.get('populacaoFim');
+
+    const populacaoIni = populacaoIniStr ? parseInt(populacaoIniStr) : undefined;
+    const populacaoFim = populacaoFimStr ? parseInt(populacaoFimStr) : undefined;
 
     const apiParams: {
         sort: string;
         page: number;
         size: number;
-        populacaoIni: number;
-        populacaoFim: number;
+        uf?: string;
+        populacaoIni?: number;
+        populacaoFim?: number;
     } = {
         sort: sort || '',
         page,
         size,
-        populacaoIni: 0,
-        populacaoFim: 1000000000
+        uf,
+        populacaoIni,
+        populacaoFim,
     };
 
     const estadosPage = await getEstados(apiParams, request.headers.get('cookie'));
 
+    const formData = {
+        uf,
+        populacaoIni,
+        populacaoFim,
+    };
+
+    const form = await superValidate(formData, zod(searchEstadosSchema));
+
     return {
         estadosPage,
-        form: await superValidate(zod(searchEstadosSchema)),
+        form,
     };
 };
 

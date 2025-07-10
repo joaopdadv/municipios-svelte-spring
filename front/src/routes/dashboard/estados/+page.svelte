@@ -146,6 +146,13 @@
                     </Table.Row>
                 {/each}
             </Table.Body>
+            {#if estados.length === 0}
+                <Table.Caption>Nenhum dado encontrado</Table.Caption>
+            {:else}
+                <Table.Caption>
+                    Mostrando {estados.length} de {totalItems} estados encontrados.
+                </Table.Caption>
+            {/if}
         </Table.Root>
     </ScrollArea>
 

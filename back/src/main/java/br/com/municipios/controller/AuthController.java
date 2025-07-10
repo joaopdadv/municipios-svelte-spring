@@ -31,7 +31,7 @@ public class AuthController {
         ResponseCookie cookie = ResponseCookie.from(jwtCookieName, res.getToken())
                 .httpOnly(true)
                 .path("/")
-                .secure(false) // Defina como 'true' em produção (HTTPS)
+                .secure(false) //'true' em produção (HTTPS)
                 .maxAge(24 * 60 * 60) // Expiração em segundos (24 horas)
                 .build();
 
