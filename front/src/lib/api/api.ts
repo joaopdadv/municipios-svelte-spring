@@ -1,17 +1,32 @@
 import axios, { type AxiosRequestConfig } from 'axios';
 import { PUBLIC_API_BASE_URL } from '$env/static/public';
-import { goto } from '$app/navigation';
 import { redirect } from '@sveltejs/kit';
+import { browser } from '$app/environment';
+import { goto } from '$app/navigation';
 
 const apiConfig: AxiosRequestConfig = {
     baseURL: PUBLIC_API_BASE_URL,
     withCredentials: true,
-    headers: {
-        'Content-Type': 'application/json'
-    }
 };
 
 const api = axios.create(apiConfig);
+
+api.interceptors.request.use(
+    config => {
+        const isFormData = config.data instanceof FormData;
+
+        if (!isFormData) {
+            config.headers['Content-Type'] = 'application/json';
+        }
+
+        return config;
+    },
+    error => {
+        console.error('Erro no interceptor de requisição:', error);
+        return Promise.reject(error);
+    }
+);
+
 
 api.interceptors.request.use(
     config => {
@@ -38,9 +53,15 @@ api.interceptors.response.use(
         return response;
     },
     error => {
-        if (error.status === 401) {
-            redirect(302, '/home');
+        const status = error.response?.status;
+        if (status === 401) {
+            if (browser) {
+                goto('/home');
+            } else {
+                throw redirect(302, '/home');
+            }
         }
+
         console.log(error.status)
         console.error('Erro na chamada da API:', error.response?.data || error.message);
         return Promise.reject(new Error(error.response?.data?.message || error.message));
