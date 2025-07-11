@@ -39,7 +39,10 @@ export function getPages({
 		key: `page-${num}`
 	});
 
-	const DOTS: PaginationItem = { type: 'ellipsis', key: `ellipsis-${Math.random()}` };
+	const createEllipsis = (id: 'left' | 'right'): PaginationItem => ({
+		type: 'ellipsis',
+		key: `ellipsis-${id}`
+	});
 
 	const startPage = Math.max(2, currentPage + 1 - siblingCount);
 	const endPage = Math.min(totalPages - 1, currentPage + 1 + siblingCount);
@@ -47,7 +50,7 @@ export function getPages({
 	pages.push(createPage(1));
 
 	if (startPage > 2) {
-		pages.push(DOTS);
+		pages.push(createEllipsis('left'));
 	}
 
 	for (let i = startPage; i <= endPage; i++) {
@@ -55,7 +58,7 @@ export function getPages({
 	}
 
 	if (endPage < totalPages - 1) {
-		pages.push(DOTS);
+		pages.push(createEllipsis('right'));
 	}
 
 	if (totalPages > 1) {
@@ -64,4 +67,5 @@ export function getPages({
 
 	return pages;
 }
+
 

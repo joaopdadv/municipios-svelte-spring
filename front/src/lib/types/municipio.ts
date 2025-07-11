@@ -10,3 +10,13 @@ export interface IMunicipio {
         codigoUf: number;
     };
 }
+
+export interface IMunicipioRequest {
+    sort: string;
+    page: number;
+    size: number;
+    nome?: string;
+    capital?: boolean;
+    populacaoIni?: number;
+    populacaoFim?: number;
+}
